@@ -1,5 +1,7 @@
 import java.util.*
 
+val decorations = listOf("rock", "pagoda", "plastic plant", "alligator", "flowerpot")
+
 fun isTooHot(temperature: Int) = temperature > 30
 
 fun isDirty(dirty: Int) = dirty > 30
@@ -42,7 +44,34 @@ fun randomDay() : String {
     return week[Random().nextInt(week.size)]
 }
 
-fun main(args: Array<String>) {
-    feedTheFish()
+fun main() {
+    val eager = decorations.filter {it[0] == 'p'}
+    println("eager: $eager")
+
+    val filtered = decorations.asSequence().filter {it[0] == 'p'}
+    println("filtered: $filtered")
+
+    val newList = filtered.toList()
+    println("new list: $newList")
+
+    val lazyMap = decorations.asSequence().map {
+        println("access: $it")
+        it
+    }
+
+    val newLazyMap = decorations.asSequence().filter {it[0] == 'p'}.map {
+        println("access: $it")
+        it
+    }
+
+//    println("lazy: $lazyMap")
+//    println("------")
+//    println("first: ${lazyMap.first()}")
+//    println("------")
+//    println("lazy: ${lazyMap.last()}")
+//    println("------")
+//    println("all: ${lazyMap.toList()}")
+    println("------")
+    println("filtered: ${newLazyMap.toList()}")
 }
 
