@@ -4,23 +4,30 @@ interface FishAction {
     fun eat()
 }
 
-abstract class AquariumFish: FishAction {
-    abstract val color: String
-    override fun eat() = println("yum")
+interface FishColor {
+    val color: String
 }
 
+object GoldColor: FishColor {
+    override val color = "gold"
+}
 
-class Shark: AquariumFish() {
+class PrintingFishAction(private val food: String): FishAction {
+    override fun eat() {
+        println(food)
+    }
+}
+
+class Shark: FishAction, FishColor  {
     override val color = "gray"
     override fun eat() {
         println("hunt and eat fish")
     }
 }
 
-class Plecostomus: AquariumFish() {
-    override val color = "gold"
-    override fun eat() {
-        println("eat algae")
-    }
-}
+/* the keyword by indicates a delegate should be used */
+class Plecostomus(fishColor: FishColor = GoldColor):
+    FishAction by PrintingFishAction("eat algae"),
+    FishColor by fishColor
+
 
