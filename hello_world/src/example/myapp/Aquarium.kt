@@ -50,6 +50,11 @@ class TowerTank (override var height: Int, var diameter: Int): Aquarium(height =
     override  var water = volume * 0.8
 
     override  val shape = "cylinder"
+
+    // directly access value from super class
+    fun printSuperWater() {
+        println(super.water)
+    }
 }
 
 sealed class Seal

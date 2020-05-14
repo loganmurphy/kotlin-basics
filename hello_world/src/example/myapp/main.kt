@@ -7,6 +7,8 @@ fun buildAquarium() {
 
     val myTower = TowerTank(diameter = 25, height = 40)
     myTower.printSize()
+
+    myTower.printSuperWater()
 }
 
 fun makeFish() {
@@ -21,6 +23,6 @@ fun makeFish() {
 }
 
 fun main() {
-    //buildAquarium()
-    makeFish()
+    buildAquarium()
+//    makeFish()
 }
