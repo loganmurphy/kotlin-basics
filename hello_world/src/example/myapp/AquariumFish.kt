@@ -8,6 +8,7 @@ interface FishColor {
     val color: String
 }
 
+// object keyword signifies a singleton class
 object GoldColor: FishColor {
     override val color = "gold"
 }
