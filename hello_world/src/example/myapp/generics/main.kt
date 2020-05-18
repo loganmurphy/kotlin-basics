@@ -23,12 +23,24 @@ class NullableAquarium<T: Any?>(val waterSupply: T)
 class NonNullableAquarium<T: Any /*Any is a generic constraint*/ >(val waterSupply: T)
 
 /* explicitly typed */
-class ExplicitAquarium<T: WaterSupply>(val waterSupply: T) {
-    fun addWater(){
+class ExplicitAquarium<out T: WaterSupply>(val waterSupply: T) {
+    fun addWater(cleaner: Cleaner<T>){
         /* throw IllegalStateException if condition fails */
         check(!waterSupply.needsProcessing) { "water supply needs processing first" }
-        println("adding water from $waterSupply")
+
+        if(waterSupply.needsProcessing) {
+            cleaner.clean(waterSupply)
+            println("adding water from $waterSupply")
+        }
     }
+}
+
+interface Cleaner<in T: WaterSupply> {
+    fun clean(waterSupply: T)
+}
+
+class TapWaterCleaner: Cleaner<TapWater> {
+    override fun clean(waterSupply: TapWater) = waterSupply.addChemicalCleaners()
 }
 
 fun genericsExample() {
@@ -53,10 +65,19 @@ fun genericsExample() {
         println("waterSupply is null!")
     }
 
+
     val explicitAquarium = ExplicitAquarium(LakeWater())
     explicitAquarium.waterSupply.filter()
-    explicitAquarium.addWater()
+
+    val cleaner = TapWaterCleaner()
+
+    val outAquarium = ExplicitAquarium(TapWater())
+    outAquarium.waterSupply.addChemicalCleaners()
+    addItemTo(outAquarium)
+    outAquarium.addWater(cleaner)
 }
+
+fun addItemTo(aquarium: ExplicitAquarium<WaterSupply>) = println("item added")
 
 fun main() {
     /* importing and using an extension method */
