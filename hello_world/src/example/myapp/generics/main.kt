@@ -3,6 +3,8 @@ import example.myapp.extension.hasSpaces
 
 open class WaterSupply(var needsProcessing: Boolean)
 
+inline fun <reified T: WaterSupply> WaterSupply.isOfType() = this is T
+
 class TapWater: WaterSupply(true) {
     fun addChemicalCleaners() { needsProcessing = false }
 }
@@ -35,6 +37,11 @@ class ExplicitAquarium<out T: WaterSupply>(val waterSupply: T) {
     }
 }
 
+
+/* inline and reified key words make generic types available at run time */
+inline fun <reified T: WaterSupply> ExplicitAquarium<*>.hasWaterSupplyOfType() = waterSupply is T
+
+
 interface Cleaner<in T: WaterSupply> {
     fun clean(waterSupply: T)
 }
@@ -43,26 +50,30 @@ class TapWaterCleaner: Cleaner<TapWater> {
     override fun clean(waterSupply: TapWater) = waterSupply.addChemicalCleaners()
 }
 
+fun <T: WaterSupply> isWaterClean(aquarium: ExplicitAquarium<T>) {
+    println("aquarium water is clean: ${!aquarium.waterSupply.needsProcessing}")
+}
+
 fun genericsExample() {
     val aquarium = Aquarium<TapWater>(TapWater())
 
     /* you can also leave out the type declaration and opt for it to be inferred */
     val inferredTypeAquarium = Aquarium(TapWater())
 
-    println(aquarium.waterSupply.needsProcessing)
+//    println(aquarium.waterSupply.needsProcessing)
     aquarium.waterSupply.addChemicalCleaners()
-    println(aquarium.waterSupply.needsProcessing)
+//    println(aquarium.waterSupply.needsProcessing)
 
-    println(inferredTypeAquarium.waterSupply.needsProcessing)
+//    println(inferredTypeAquarium.waterSupply.needsProcessing)
     inferredTypeAquarium.waterSupply.addChemicalCleaners()
-    println(inferredTypeAquarium.waterSupply.needsProcessing)
+//    println(inferredTypeAquarium.waterSupply.needsProcessing)
 
     val anotherAquarium = Aquarium("string")
     println(anotherAquarium.waterSupply)
 
     val nullAquarium = Aquarium(null)
     if (nullAquarium.waterSupply == null) {
-        println("waterSupply is null!")
+//        println("waterSupply is null!")
     }
 
 
@@ -75,6 +86,9 @@ fun genericsExample() {
     outAquarium.waterSupply.addChemicalCleaners()
     addItemTo(outAquarium)
     outAquarium.addWater(cleaner)
+    isWaterClean(outAquarium)
+    println(outAquarium.hasWaterSupplyOfType<TapWater>())
+    println("same as above but using extension: ${outAquarium.waterSupply.isOfType<TapWater>()}")
 }
 
 fun addItemTo(aquarium: ExplicitAquarium<WaterSupply>) = println("item added")
