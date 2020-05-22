@@ -23,6 +23,16 @@ fun testAnnotations() {
     println(myAnnotationObj)
 }
 
+fun labels() {
+    outerLoop@ for (i in 1..100) {
+        print("$i")
+        for (j in 1..100) {
+            if(i > 10) break@outerLoop //break to outer loop
+        }
+    }
+}
+
 fun main() {
-    testAnnotations()
+//    testAnnotations()
+    labels()
 }
